@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Symptom Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Symptom Checker</h1>
+
+  <label for="symptomDescription">Enter your symptom:</label><br>
+  <textarea id="symptomDescription" placeholder="Describe your symptoms here..."></textarea><br><br>
+
+  <button onclick="getDiagnosisAndRemedy()">Get Diagnosis and Remedy</button>
+
+  <h3>Response:</h3>
+  <pre id="result"></pre>
+
+  <script>
+    async function getDiagnosisAndRemedy() {
+      const symptomDescription = document.getElementById('symptomDescription').value;
+
+      if (!symptomDescription) {
+        alert('Please enter a symptom description!');
+        return;
+      }
+
+      // Send the symptom description to the backend server
+      const response = await fetch('http://localhost:3000/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ symptomDescription })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById('result').innerText = `Diagnosis & Remedies:\n\n${data.answer}`;
+      } else {
+        document.getElementById('result').innerText = `Error: ${data.message}`;
+      }
+    }
+  </script>
+
+</body>
+</html>
